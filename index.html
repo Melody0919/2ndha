@@ -102,7 +102,7 @@
   </section>
 
   <section class="form">
-    <label for="model">型號</label>
+    <label for="model">型號<span style="color:red">*</span></label>
     <select id="model">
       <option value="">請選擇型號</option>
       <option value="T1">T1</option>
@@ -113,11 +113,11 @@
     </select>
     <div id="modelError" class="error"></div>
 
-    <label for="purchaseDate">購買日期</label>
+    <label for="purchaseDate">購買日期<span style="color:red">*</span></label>
     <input type="date" id="purchaseDate">
     <div id="dateError" class="error"></div>
 
-    <label for="purchasePrice">購買價格 (NT$)</label>
+    <label for="purchasePrice">購買價格 (NT$)<span style="color:red">*</span></label>
     <input type="number" id="purchasePrice" placeholder="輸入原購買價格" min="1">
     <div id="priceError" class="error"></div>
 
