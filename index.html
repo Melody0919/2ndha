@@ -48,6 +48,10 @@
       margin-bottom: 0.5rem;
       font-weight: 500;
     }
+    .required-star::after {
+      content: " *";
+      color: red;
+    }
     .form input, .form select {
       width: 100%;
       padding: 0.75rem;
@@ -102,7 +106,7 @@
   </section>
 
   <section class="form">
-    <label for="model">型號<span style="color:red">*</span></label>
+    <label for="model" class="required-star">型號</label>
     <select id="model">
       <option value="">請選擇型號</option>
       <option value="T1">T1</option>
@@ -113,13 +117,17 @@
     </select>
     <div id="modelError" class="error"></div>
 
-    <label for="purchaseDate">購買日期<span style="color:red">*</span></label>
+    <label for="purchaseDate" class="required-star">購買日期</label>
     <input type="date" id="purchaseDate">
     <div id="dateError" class="error"></div>
 
-    <label for="purchasePrice">購買價格 (NT$)<span style="color:red">*</span></label>
+    <label for="purchasePrice" class="required-star">購買價格 (NT$)</label>
     <input type="number" id="purchasePrice" placeholder="輸入原購買價格" min="1">
     <div id="priceError" class="error"></div>
+
+    <label for="warranty">保固期限 (月)</label>
+    <input type="number" id="warranty" placeholder="例如：24" min="1">
+    <div id="warrantyError" class="error"></div>
 
     <button onclick="calculatePrice()">立即估價</button>
     <div class="result" id="result"></div>
@@ -156,7 +164,7 @@
         document.getElementById('dateError').textContent = '請選擇購買日期';
         hasError = true;
       } else if (new Date(purchaseDate) > new Date()) {
-        document.getElementById('dateError').textContent = '購買日期不能晚於今天';
+        document.getElementById('dateError').textContent = '購買日期不能大於今天';
         hasError = true;
       }
 
@@ -165,7 +173,7 @@
         hasError = true;
       }
 
-      if (isNaN(warranty) || warranty <= 0) {
+      if (warranty && (isNaN(warranty) || warranty <= 0)) {
         document.getElementById('warrantyError').textContent = '請輸入有效的保固期限';
         hasError = true;
       }
@@ -174,7 +182,7 @@
 
       const today = new Date();
       const purchase = new Date(purchaseDate);
-      const diffYears = (today - purchase) / (1000 * 60 * 60 * 24 * 365.25); // 使用年限
+      const diffYears = (today - purchase) / (1000 * 60 * 60 * 24 * 365.25);
 
       const depreciation = ((purchasePrice - (purchasePrice * 0.05)) / 5) * diffYears;
       const baseValue = purchasePrice - depreciation;
@@ -191,7 +199,11 @@
         '很好': formatCurrency(Math.max(baseValue * adjust['很好'], 0).toFixed(0))
       };
 
-      document.getElementById('result').innerHTML = `
+      const now = new Date();
+      const result = document.getElementById('result');
+      result.innerHTML = `
+        <p>估價時間：${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}</p>
+        <p>型號：${model}｜購買日期：${purchaseDate}｜使用年限：約 ${diffYears.toFixed(1)} 年</p>
         <table>
           <tr>
             <th>物品狀況</th>
@@ -207,6 +219,11 @@
           </tr>
         </table>
       `;
+
+      document.getElementById('model').value = '';
+      document.getElementById('purchaseDate').value = '';
+      document.getElementById('purchasePrice').value = '';
+      document.getElementById('warranty').value = '';
     }
   </script>
 </body>
